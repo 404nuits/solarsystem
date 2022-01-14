@@ -5,3 +5,22 @@ html, body {
     overflow: hidden;
     margin: 0;
 }
+
+.mongui {
+
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    top: 0;
+    right: 15px;
+    z-index: 1;
+
+}
+
+.hide {
+    display: none;
+}
+
+#canvas {
+    z-index: 0;
+}

@@ -23,6 +23,9 @@ export class SceneManager {
             height: canvas.height
         };
 
+        let focus = 'sun';
+        
+
         let darkMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
 
         const scene = buildScene();
@@ -30,6 +33,8 @@ export class SceneManager {
         const camera = buildCamera(canvasSize);
         const controls = buildOrbitControls(camera, renderer);
 
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
 
         const renderScene = buildRenderPass(scene,camera);
         
@@ -51,15 +56,58 @@ export class SceneManager {
 
         const sceneSubjects = createSceneSubjects(scene);
 
-
+        // buildGUI();
 
         // showHelpers();
         init();
 
         function init() {
+
+
+
+
             camera.position.set( 0, 20, 50 );
+            camera.lookAt(sceneSubjects[5].mesh.position);
             controls.update();
             bloomComposer.render();
+
+
+
+
+            document.addEventListener('pointerdown', onPointerDown);
+
+
+
+        }
+
+        function onPointerDown(event) {
+            mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+            raycaster.setFromCamera( mouse, camera );
+            var intersects = raycaster.intersectObjects( scene.children );
+            if ( intersects.length > 1 ) {
+                focus = intersects[0].object.name;
+            }
+        }
+
+        function buildGUI() {
+
+            // const gui = new GUI();
+            // const focusFolder = gui.addFolder('Focus');
+            // focusFolder.add(controls.target)
+
+
+            let btnEarth = document.getElementById('focusEarth');
+            let btnSun = document.getElementById('focusSun');
+
+            btnEarth.addEventListener('click', () => {
+                console.log('Earth focus !');
+                focus = 'earth';
+            });
+
+            btnSun.addEventListener('click', () => {
+                focus = 'sun';
+            });
         }
 
         function buildFinalPass(bloomComposer) {
@@ -94,6 +142,7 @@ export class SceneManager {
 
             return effectComposer;
         }
+
 
         function buildBloomPass({width, height}) {
 
@@ -147,14 +196,14 @@ export class SceneManager {
 
         function createSceneSubjects(scene) {
 
-            let mercury = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 0.8, 25, 0.008);
-            let venus = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 0.9, 28, 0.0059);
-            let earth = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 1, 31, 0.005);
-            let mars = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 0.8, 34, 0.004);
-            let jupiter = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 3.5, 42, 0.0022);
-            let saturn = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 2.9, 50, 0.0016);
-            let uranus = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 1.7, 56, 0.0011);
-            let neptune = new Planet(scene,new THREE.TextureLoader().load('assets/erwan.png'), 1.65, 60, 0.0009);
+            let mercury = new Planet('mercury',scene,new THREE.TextureLoader().load('assets/erwan.png'), 0.8, 25, 0.008);
+            let venus = new Planet('venus',scene,new THREE.TextureLoader().load('assets/erwan.png'), 0.9, 28, 0.0059);
+            let earth = new Planet('earth',scene,new THREE.TextureLoader().load('assets/erwan.png'), 1, 31, 0.005);
+            let mars = new Planet('mars',scene,new THREE.TextureLoader().load('assets/erwan.png'), 0.8, 34, 0.004);
+            let jupiter = new Planet('jupiter',scene,new THREE.TextureLoader().load('assets/erwan.png'), 3.5, 42, 0.0022);
+            let saturn = new Planet('saturn',scene,new THREE.TextureLoader().load('assets/erwan.png'), 2.9, 50, 0.0016);
+            let uranus = new Planet('uranus',scene,new THREE.TextureLoader().load('assets/erwan.png'), 1.7, 56, 0.0011);
+            let neptune = new Planet('neptune',scene,new THREE.TextureLoader().load('assets/erwan.png'), 1.65, 60, 0.0009);
 
             const sceneSubjects = [
                 new GeneralLights(scene),
@@ -186,13 +235,47 @@ export class SceneManager {
             return controls;
         }
 
+        function followObject() {
+
+            let x,y,z = 0;
+            let index = 2;
+
+            if (focus == 'sun') {
+                index = 2;
+            } else if (focus == 'mercury') {
+                index = 3;
+            }else if (focus == 'venus') {
+                index = 4;
+            }else if (focus == 'earth') {
+                index = 5;
+            }else if (focus == 'mars') {
+                index = 6;
+            }else if (focus == 'jupiter') {
+                index = 7;
+            }else if (focus == 'saturn') {
+                index = 8;
+            }else if (focus == 'uranus') {
+                index = 9;
+            }else if (focus == 'neptune') {
+                index = 10;
+            }
+  
+
+            x = sceneSubjects[index].mesh.position.x
+            y = sceneSubjects[index].mesh.position.y
+            z = sceneSubjects[index].mesh.position.z
+
+            controls.target.set(x,y,z);
+        }
+
         this.update = function () {
             const elapsedTime = clock.getElapsedTime();
 
             for (let i = 0; i < sceneSubjects.length; i++) {
                 sceneSubjects[i].update(elapsedTime);
             }
-            
+
+            followObject();
             controls.update();
 
 

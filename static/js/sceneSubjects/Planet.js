@@ -1,7 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
 
 export class Planet {
-	constructor(scene, map, scale, distance=50, speed=0.01) {
+	constructor(name, scene, map, scale, distance=50, speed=0.01) {
 
 		let geometry = new THREE.SphereGeometry(1,32,32);
         this.material = new THREE.MeshBasicMaterial({
@@ -11,6 +11,7 @@ export class Planet {
 
         this.mesh.scale.setScalar(scale);
 		this.mesh.position.set(distance, 0, 0);
+        this.mesh.name = name;
 
 		scene.add(this.mesh);
 
