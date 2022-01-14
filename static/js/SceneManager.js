@@ -71,12 +71,7 @@ export class SceneManager {
             controls.update();
             bloomComposer.render();
 
-
-
-
             document.addEventListener('pointerdown', onPointerDown);
-
-
 
         }
 
@@ -281,13 +276,13 @@ export class SceneManager {
 
             
             for (let i = 0; i < sceneSubjects.length; i++) {
-                if (sceneSubjects[i] instanceof Planet) {
+                if ((sceneSubjects[i] instanceof Planet) || (sceneSubjects[i] instanceof Galaxy)){
                     sceneSubjects[i].mesh.material = darkMaterial;
                 }
             }
             bloomComposer.render();
             for (let i = 0; i < sceneSubjects.length; i++) {
-                if (sceneSubjects[i] instanceof Planet) {
+                if ((sceneSubjects[i] instanceof Planet) || (sceneSubjects[i] instanceof Galaxy)){
                     sceneSubjects[i].mesh.material = sceneSubjects[i].material;
                 }
             }

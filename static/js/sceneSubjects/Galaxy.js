@@ -3,20 +3,26 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.m
 export class Galaxy {
 	constructor(scene) {
 
-        let texture = new THREE.TextureLoader().load('assets/galaxy.png');
-		let geometry = new THREE.SphereGeometry(80,64,64);
-        let material = new THREE.MeshBasicMaterial({map: texture, side: THREE.BackSide, transparent: true});
+        this.texture = new THREE.TextureLoader().load('assets/galaxy.png');
 
-        let mesh = new THREE.Mesh(geometry, material);
+        // let video = document.getElementById('video');
+        // video.load();
+        // video.play();
+        // let this.texture = new THREE.VideoTexture(video);
 
-		mesh.position.set(0, 0, 0);
+		this.geometry = new THREE.SphereGeometry(80,64,64);
+        this.material = new THREE.MeshBasicMaterial({map: this.texture, side: THREE.BackSide, transparent: true});
 
-		mesh.scale.setScalar(10);
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
 
-		scene.add(mesh);
+		this.mesh.position.set(0, 0, 0);
+
+		this.mesh.scale.setScalar(10);
+
+		scene.add(this.mesh);
 
 		this.update = function (time) {
-			mesh.rotation.y -= 0.001;
+			this.mesh.rotation.y -= 0.001;
 		};
 	}
 }
